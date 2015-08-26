@@ -4,12 +4,14 @@ from Tkinter import *
 
 class Application(Frame):
     #create global variables
+    buddies = ['billButton', 'jeffButton', 'mattButton']
+    buttonNames = {'billButton': {'varName': 'buttonBill'}, 'jeffButton': {'varName': 'buttonJeff'}, 'mattButton': {'varName': 'buttonMatt'}}
     billArray = ["Hi", "What\'d you say to me?", "Do I look like I drive cabs in Baton Rouge for fun?"]
-    billTextColor = "blue"
     jeffArray = ["Yo", "Dude, that's so funny I forgot to laugh", "You know, you would get along well with my grandmother, she is really annoying too"]
-    jeffTextColor = "yellow"
     mattArray = ["Lemonade for sale", "You think you are better than me", "My dad could so beat your dad in a race"]
-    mattTextColor = "red"
+    buttons = {'billButton': {'name': 'Bill', 'label': 'billLabel', 'text': 'Talk to Bill', 'textColor': 'blue', 'array': billArray},
+               'jeffButton': {'name': 'Jeff', 'label': 'jeffLabel', 'text': 'Talk to Jeff', 'textColor': 'blue', 'array':jeffArray},
+               'mattButton': {'name': 'Matt', 'label': 'mattLabel', 'text': 'Talk to Matt', 'textColor': 'red', 'array': mattArray}}
     randNum = 0
     """
     function to initialize frame
@@ -50,25 +52,34 @@ class Application(Frame):
     function to create initial widgets
     """
     def create_widgets(self):
+        """
+        Using a loop is infesible because the value of i will always be used and generate the phrases of the last buddies in the array
+        best fix for right now is to use a finite number of buddies
+        """
         #create buttons
-        self.billButton = Button(self)
-        self.billButton.grid()
-        self.billButton["text"] = "Talk to Bill"
+        self.buttonNames[self.buddies[0]]['varName'] = Button(self)
+        self.buttonNames[self.buddies[0]]['varName'].grid()
+        self.buttonNames[self.buddies[0]]['varName']["text"] = self.buttons[self.buddies[0]]['text']
         #add event handler
         #use lambda to avoid immediable invokation
-        self.billButton["command"] = lambda: self.chat("Bill", self.billArray, self.billTextColor)
+        self.buttonNames[self.buddies[0]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[0]]['name'], self.buttons[self.buddies[0]]['array'], self.buttons[self.buddies[0]]['textColor'])
+        
+        self.buttonNames[self.buddies[0]]['varName'] = Button(self)
+        self.buttonNames[self.buddies[0]]['varName'].grid()
+        self.buttonNames[self.buddies[0]]['varName']["text"] = self.buttons[self.buddies[0]]['text']
+        #add event handler
+        #use lambda to avoid immediable invokation
+        self.buttonNames[self.buddies[0]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[0]]['name'], self.buttons[self.buddies[0]]['array'], self.buttons[self.buddies[0]]['textColor'])
 
-        self.jeffButton = Button(self)
-        self.jeffButton.grid()
-        self.jeffButton["text"] = "Talk to Jeff"
-        self.jeffButton["command"] = lambda: self.chat("Jeff", self.jeffArray, self.jeffTextColor)
+        self.buttonNames[self.buddies[1]]['varName'] = Button(self)
+        self.buttonNames[self.buddies[1]]['varName'].grid()
+        self.buttonNames[self.buddies[1]]['varName']["text"] = self.buttons[self.buddies[1]]['text']
+        self.buttonNames[self.buddies[1]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[1]]['name'], self.buttons[self.buddies[1]]['array'], self.buttons[self.buddies[1]]['textColor'])
 
-        self.mattButton = Button(self)
-        self.mattButton.grid()
-        self.mattButton["text"] = "Talk to Matt"
-        self.mattButton["command"] = lambda: self.chat("Matt", self.mattArray, self.mattTextColor)
-
-
+        self.buttonNames[self.buddies[2]]['varName'] = Button(self)
+        self.buttonNames[self.buddies[2]]['varName'].grid()
+        self.buttonNames[self.buddies[2]]['varName']["text"] = self.buttons[self.buddies[2]]['text']
+        self.buttonNames[self.buddies[2]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[2]]['name'], self.buttons[self.buddies[2]]['array'], self.buttons[self.buddies[2]]['textColor'])
 
 #variable to take on main library
 root = Tk()
