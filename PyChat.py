@@ -9,17 +9,24 @@ root.title("PyChat")
 root.rowconfigure(0, weight = 1)
 root.columnconfigure(0, weight = 1)
 
+
+
 class Application(Frame):
     #create global variables
-    buddies = ['billButton', 'jeffButton', 'mattButton']
-    buttonNames = {'billButton': {'varName': 'buttonBill'}, 'jeffButton': {'varName': 'buttonJeff'}, 'mattButton': {'varName': 'buttonMatt'}}
-    billArray = ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"]
-    jeffArray = ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "You know, you would get along well with my grandmother, she is really annoying too\n"]
-    mattArray = ["Lemonade for sale\n", "You think you are better than me\n", "My dad could so beat your dad in a race\n"]
-    buttons = {'billButton': {'name': 'Bill', 'label': 'billLabel', 'text': 'Talk to Bill', 'textColor': 'blue', 'array': billArray},
-               'jeffButton': {'name': 'Jeff', 'label': 'jeffLabel', 'text': 'Talk to Jeff', 'textColor': 'green', 'array':jeffArray},
-               'mattButton': {'name': 'Matt', 'label': 'mattLabel', 'text': 'Talk to Matt', 'textColor': 'red', 'array': mattArray}}
+    buddies = ['Bill', 'Jeff', 'Matt']
+    chatColors = ['billColor', 'jeffColor', 'mattColor']
+    chatArray = [
+                          #Bill
+                          ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"], 
+                          #Jeff
+                          ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "You know, you would get along well with my grandmother, she is really annoying too\n"],
+                          #Matt
+                          ["Lemonade for sale\n", "You think you are better than me\n", "My dad could so beat your dad in a race\n"]
+                          ]
     randNum = 0
+    #TODO: These will eventually be dynamically gotten
+    userName = "Tester"
+    userColor = "Purple"
     """
     function to initialize frame
     """
@@ -41,15 +48,47 @@ class Application(Frame):
         randNum = random.randint(0, size - 1)
         return randNum
     """
+    function for user input
+    """
+    def userInput(self, userName):
+         #get text from input field
+        lastResponse = self.inputField.get()
+        userIndex = self.chatbox.index("insert")
+        self.chatbox.insert('insert', userName + ": " + lastResponse + "\n")
+        self.chatbox.tag_add("userColor", userIndex + "", "insert")
+    """
+    Function for the AI to think of a response
+    """
+    def chatThink(self, event):
+        #Make a copy of the username global variable
+        userName = self.userName
+        self.userInput(userName)
+        #You do need to use the insert method after the delete method, as shown below
+        self.inputField.delete(0, END)
+        self.inputField.insert(0, "")
+        self.inputField.configure(state='disabled')
+        
+        #choose random buddy
+        randNumBuddy = self.generateRand(len(self.buddies))
+        buddy = self.buddies[randNumBuddy]
+        #choose chat color
+        chatColorTag = self.chatColors[randNumBuddy]
+        #choose random chat
+        randNumChat = self.generateRand(len(self.buddies))
+        chat = self.chatArray[randNumBuddy][randNumChat]
+        #find the index to start the text coloring
+        index = self.chatbox.index('insert')
+        self.chatRespond(buddy, chat, chatColorTag, index)
+        self.inputField.configure(state='normal')
+
+    """
     function to generate Bill's Messages
     """
-    def chat(self, buddy, arrayName, chatColor):
-        #generate random int between 0 and list size
-        randNum = self.generateRand(len(arrayName))
-        #generate label
-        self.labelName = Text(self)
-        self.chatbox.insert('insert', buddy + ": " + arrayName[randNum])
-
+    def chatRespond(self, buddy, chat, chatColorTag, index):
+        self.chatbox.insert('insert', buddy + ": " + chat)
+        self.chatbox.tag_add(chatColorTag, index + "", "insert")
+        #scroll to end
+        self.chatbox.see('end')
     """
     function to create initial widgets
     """
@@ -58,29 +97,26 @@ class Application(Frame):
         Using a loop is infesible because the value of i will always be used and generate the phrases of the last buddies in the array
         best fix for right now is to use a finite number of buddies
         """
-        self.chatbox = ScrolledText(self, wrap = 'word', width = 25, height = 10, bg = 'beige')
+        #username label
+        #TODO: Make Seperate screen to enter name
+        self.userNameLabel = Label(self, text = self.userName)
+        self.userNameLabel.grid(row = 8, column = 0)
+        #chatbox
+        self.chatbox = ScrolledText(self, wrap = 'word', width = 50, height = 20, bg = 'beige')
         self.chatbox.grid(row = 0, column = 0, rowspan =7, columnspan =7)
-        #create buttons
-        self.buttonNames[self.buddies[0]]['varName'] = Button(self)
-        self.buttonNames[self.buddies[0]]['varName'].grid(row = 8, column = 8, columnspan = 2)
-        self.buttonNames[self.buddies[0]]['varName']["text"] = self.buttons[self.buddies[0]]['text']
-        #add event handler
-        #use lambda to avoid immediable invokation
-        self.buttonNames[self.buddies[0]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[0]]['name'], self.buttons[self.buddies[0]]['array'], self.buttons[self.buddies[0]]['textColor'])
-
-        self.buttonNames[self.buddies[1]]['varName'] = Button(self)
-        self.buttonNames[self.buddies[1]]['varName'].grid(row = 9, column = 9)
-        self.buttonNames[self.buddies[1]]['varName']["text"] = self.buttons[self.buddies[1]]['text']
-        self.buttonNames[self.buddies[1]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[1]]['name'], self.buttons[self.buddies[1]]['array'], self.buttons[self.buddies[1]]['textColor'])
-
-        self.buttonNames[self.buddies[2]]['varName'] = Button(self)
-        self.buttonNames[self.buddies[2]]['varName'].grid(row = 9, column = 8)
-        self.buttonNames[self.buddies[2]]['varName']["text"] = self.buttons[self.buddies[2]]['text']
-        self.buttonNames[self.buddies[2]]['varName']["command"] = lambda: self.chat(self.buttons[self.buddies[2]]['name'], self.buttons[self.buddies[2]]['array'], self.buttons[self.buddies[2]]['textColor'])
+        #setting colors
+        self.chatbox.tag_config("userColor", foreground = self.userColor)
+        self.chatbox.tag_config("billColor", foreground="Blue")
+        self.chatbox.tag_config("jeffColor", foreground="Green")
+        self.chatbox.tag_config("mattColor", foreground="Red")
+        #input field
+        self.inputField = Entry(self)
+        self.inputField.grid(row =8, column = 6)
+        self.inputField.bind('<Return>', self.chatThink)
 
 
 #frame size
-root.geometry()
+root.geometry("")
 #making the application the root
 app = Application(root)
 #starting the main loop
