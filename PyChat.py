@@ -2,8 +2,10 @@ import random
 #Graphics Library
 from Tkinter import *
 from tkColorChooser import askcolor 
+from tkFileDialog import *
 from ScrolledText import ScrolledText
 import tkMessageBox
+import PIL.Image
 #variable to take on main library
 root = Tk()
 
@@ -100,11 +102,26 @@ class Application(Frame):
         self.userName = self.inputField.get()
         #make a copy to a local variable
         userName = self.userName
+        self.userProfilePicture = 'profile_pics/' + userName + '.png'
         tkMessageBox.showinfo('UserName', 'Your name is ' + userName)
          #create chat
         self.chat_screen()
         #create friends list
         #self.friends_screen()
+        """
+    function to upload a profile picture
+    """
+    def uploadProfilePicture(self):
+        fileName = askopenfilename(filetypes = [('PNG FILES', '*.png')])
+        #resize image
+        basewidth = 300
+        img = PIL.Image.open(fileName)
+        wpercent = (basewidth/float(img.size[0]))
+        hsize = int((float(img.size[1])*float(wpercent)))
+        img = img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
+        img.save('profile_pics/' + self.userName + '.png')
+        self.userProfilePicture = 'profile_pics/' + self.userName + '.png'
+        self.userProfileScreen()
     """
     function to create initial widgets
     """
@@ -129,13 +146,27 @@ class Application(Frame):
         Using a loop is infesible because the value of i will always be used and generate the phrases of the last buddies in the array
         best fix for right now is to use a finite number of buddies
         """
+        #destroy old frame and add new one
+        self.destroy()
+        Frame.__init__(self)
+        self.grid(row = 0, column = 0)
         root.title("PyChat")
         userName = self.userName
         userColor = self.userColor
+        if hasattr(self, 'userProfilePicture'):
+            self.profilePictureThumbnail = PhotoImage(file = self.userProfilePicture)
+            self.profilePictureThumbnailLabel = Label(self, image = self.profilePictureThumbnail)
+            self.profilePictureThumbnailLabel.grid(row = 10, column = 2)
+        else:
+            self.profilePictureThumbnailLabel = Label(self, text = "You have no Profile Picture Yet")
+            self.profilePictureThumbnailLabel.grid(row = 10, column = 2)
         #username label
         #TODO: Make Seperate screen to enter name
         self.userNameLabel = Label(self, text = userName)
-        self.userNameLabel.grid(row = 8, column = 0)
+        self.userNameLabel.grid(row = 9, column = 2)
+        #profile button
+        self.profileButton = Button(self, text = "Profile", command = self.userProfileScreen)
+        self.profileButton.grid(row = 9, column = 0)
         #chatbox
         self.chatbox = ScrolledText(self, wrap = 'word', width = 50, height = 20, bg = 'beige')
         self.chatbox.grid(row = 0, column = 0, rowspan =7, columnspan =7)
@@ -151,9 +182,25 @@ class Application(Frame):
     """
     function to create profile widgets
     """
-    def profile_screen(self):
+    def userProfileScreen(self):
+        #destroy old frame and add new one
+        self.destroy()
+        Frame.__init__(self)
+        self.grid(row = 0, column = 0)
+        root.title(self.userName + "'s Profile")
         username = self.userName
         userColor = self.userColor
+        self.uploadProfilePictureButton = Button(self, text = "Upload New Picture", command = self.uploadProfilePicture)
+        self.uploadProfilePictureButton.grid()
+        if hasattr(self, 'userProfilePicture'):
+            self.profilePictureImage = PhotoImage(file = self.userProfilePicture)
+            self.profilePictureLabel = Label(self, image = self.profilePictureImage)
+            self.profilePictureLabel.grid()
+        else:
+            self.profilePictureLabel = Label(self, text = "Please Upload a new Image")
+            self.profilePictureLabel.grid()
+        self.uploadProfilePictureButton = Button(self, text = "Back", command = self.chat_screen)
+        self.uploadProfilePictureButton.grid()
         #TODO user picture
         #username 
         #self.userNameLabel = Label(self, text = "username: " + userName)
