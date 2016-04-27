@@ -1,7 +1,7 @@
 import random
 #Graphics Library
 from Tkinter import *
-from tkColorChooser import askcolor 
+from tkColorChooser import askcolor
 from tkFileDialog import *
 from ScrolledText import ScrolledText
 import tkMessageBox
@@ -22,12 +22,13 @@ class Application(Frame):
     chatColors = ['billColor', 'jeffColor', 'mattColor']
     chatArray = [
                           #Bill
-                          ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"], 
+                          ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"],
                           #Jeff
                           ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "You know, you would get along well with my grandmother, she is really annoying too\n"],
                           #Matt
                           ["Lemonade for sale\n", "You think you are better than me\n", "My dad could so beat your dad in a race\n"]
                           ]
+
     randNum = 0
     userName = ""
     userColor = ""
@@ -72,7 +73,7 @@ class Application(Frame):
         self.inputField.delete(0, END)
         self.inputField.insert(0, "")
         self.inputField.configure(state='disabled')
-        
+
         #choose random buddy
         randNumBuddy = self.generateRand(len(self.buddies))
         buddy = self.buddies[randNumBuddy]
@@ -95,14 +96,14 @@ class Application(Frame):
         #scroll to end
         self.chatbox.see('end')
     """
-    function to validate username input 
+    function to validate username input
     """
     def inputValidate(self, event):
         #TODO validate input
         self.userName = self.inputField.get()
         #make a copy to a local variable
         userName = self.userName
-        self.userProfilePicture = 'profile_pics/' + userName + '.png'
+        self.userProfilePicture = 'profile_pics/' + userName + '_thumbnail.png'
         tkMessageBox.showinfo('UserName', 'Your name is ' + userName)
          #create chat
         self.chat_screen()
@@ -113,14 +114,15 @@ class Application(Frame):
     """
     def uploadProfilePicture(self):
         fileName = askopenfilename(filetypes = [('PNG FILES', '*.png')])
-        #resize image
-        basewidth = 300
+        #the following is a script to resize an image while maintaining the aspect ratio
+        #http://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
+        basewidth = 50
         img = PIL.Image.open(fileName)
         wpercent = (basewidth/float(img.size[0]))
         hsize = int((float(img.size[1])*float(wpercent)))
         img = img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
-        img.save('profile_pics/' + self.userName + '.png')
-        self.userProfilePicture = 'profile_pics/' + self.userName + '.png'
+        img.save('profile_pics/' + self.userName + '_thumbnail.png')
+        self.userProfilePicture = 'profile_pics/' + self.userName + '_thumbnail.png'
         self.userProfileScreen()
     """
     function to create initial widgets
@@ -137,7 +139,7 @@ class Application(Frame):
         self.inputField = Entry(self)
         self.inputField.grid(row =3, column = 3)
         self.inputField.bind('<Return>', self.inputValidate)
-        
+
     """
     function to create initial widgets
     """
@@ -161,7 +163,6 @@ class Application(Frame):
             self.profilePictureThumbnailLabel = Label(self, text = "You have no Profile Picture Yet")
             self.profilePictureThumbnailLabel.grid(row = 10, column = 2)
         #username label
-        #TODO: Make Seperate screen to enter name
         self.userNameLabel = Label(self, text = userName)
         self.userNameLabel.grid(row = 9, column = 2)
         #profile button
@@ -169,7 +170,7 @@ class Application(Frame):
         self.profileButton.grid(row = 9, column = 0)
         #chatbox
         self.chatbox = ScrolledText(self, wrap = 'word', width = 50, height = 20, bg = 'beige')
-        self.chatbox.grid(row = 0, column = 0, rowspan =7, columnspan =7)
+        self.chatbox.grid(row = 0, column = 0, rowspan =8, columnspan =7)
         #setting colors
         self.chatbox.tag_config("userColor", foreground = userColor)
         self.chatbox.tag_config("billColor", foreground="Blue")
@@ -177,8 +178,12 @@ class Application(Frame):
         self.chatbox.tag_config("mattColor", foreground="Red")
         #input field
         self.inputField = Entry(self)
-        self.inputField.grid(row =8, column = 6)
+        self.inputField.grid(row =9, column = 6)
         self.inputField.bind('<Return>', self.chatThink)
+        #friends list
+        self.friendsList = Listbox(self, selectmode=BROWSE)
+        self.friendsList.grid(row = 0, column = 8, rowspan = 8, columnspan = 8)
+        self.friendsList.insert(0, "first")
     """
     function to create profile widgets
     """
@@ -202,7 +207,7 @@ class Application(Frame):
         self.uploadProfilePictureButton = Button(self, text = "Back", command = self.chat_screen)
         self.uploadProfilePictureButton.grid()
         #TODO user picture
-        #username 
+        #username
         #self.userNameLabel = Label(self, text = "username: " + userName)
         #TODO create change button
     """
