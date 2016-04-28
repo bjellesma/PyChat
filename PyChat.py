@@ -13,7 +13,7 @@ root = Tk()
 #root.title("PyChat")
 #root.rowconfigure(0, weight = 1)
 #root.columnconfigure(0, weight = 1)
-
+#TODO if no thumbnail is created, the program will err out
 
 
 class Application(Frame):
@@ -62,6 +62,21 @@ class Application(Frame):
         userIndex = self.chatbox.index("insert")
         self.chatbox.insert('insert', userName + ": " + lastResponse + "\n")
         self.chatbox.tag_add("userColor", userIndex + "", "insert")
+    """
+    Function to remove friend
+    """
+    def removeFriend(self, username, friendToRemoveIndex):
+        buddies = self.buddies
+        friendToRemove = buddies[friendToRemoveIndex]
+        buddies.remove(friendToRemove)
+
+        print "here is self.buddies"
+        for e in self.buddies:
+            print e
+        print "here is buddies"
+        for e in buddies:
+            print e
+        self.friendsList.delete(friendToRemoveIndex)
     """
     Function for the AI to think of a response
     """
@@ -153,8 +168,10 @@ class Application(Frame):
         Frame.__init__(self)
         self.grid(row = 0, column = 0)
         root.title("PyChat")
+        #making copies of global variables
         userName = self.userName
         userColor = self.userColor
+        buddies = self.buddies
         if hasattr(self, 'userProfilePicture'):
             self.profilePictureThumbnail = PhotoImage(file = self.userProfilePicture)
             self.profilePictureThumbnailLabel = Label(self, image = self.profilePictureThumbnail)
@@ -183,7 +200,15 @@ class Application(Frame):
         #friends list
         self.friendsList = Listbox(self, selectmode=BROWSE)
         self.friendsList.grid(row = 0, column = 8, rowspan = 8, columnspan = 8)
-        self.friendsList.insert(0, "first")
+        #populate friendslist
+        for buddy in buddies:
+            self.friendsList.insert(END, buddy)
+        #add friend
+        #self.addFriendButton = Button(self, text = "Add friend", command = self.addFriendScreen)
+        #self.addFriendButton.grid(row = 9, column = 8)
+        #remove friend
+        self.removeFriendButton = Button(self, text = "Remove friend", command =lambda self=self: self.removeFriend(userName, 1))
+        self.removeFriendButton.grid(row = 9, column = 9)
     """
     function to create profile widgets
     """
@@ -210,13 +235,7 @@ class Application(Frame):
         #username
         #self.userNameLabel = Label(self, text = "username: " + userName)
         #TODO create change button
-    """
-    function to create friends list
-    """
-    def friends_screen(self):
-        root2.title("friends list")
-        self.friendLabel = Label(self, text = "test")
-        self.friendLabel.grid(row = 0, column = 0)
+
 #frame size
 root.geometry("")
 
