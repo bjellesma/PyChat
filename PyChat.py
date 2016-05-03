@@ -5,7 +5,8 @@ from tkColorChooser import askcolor
 from tkFileDialog import *
 from ScrolledText import ScrolledText
 import tkMessageBox
-import PIL.Image
+#import PIL.Image
+import PyChatBuddies
 #variable to take on main library
 root = Tk()
 
@@ -18,16 +19,9 @@ root = Tk()
 
 class Application(Frame):
     #create global variables
-    buddies = ['Bill', 'Jeff', 'Matt']
-    chatColors = ['billColor', 'jeffColor', 'mattColor']
-    chatArray = [
-                          #Bill
-                          ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"],
-                          #Jeff
-                          ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "You know, you would get along well with my grandmother, she is really annoying too\n"],
-                          #Matt
-                          ["Lemonade for sale\n", "You think you are better than me\n", "My dad could so beat your dad in a race\n"]
-                          ]
+    #chatColors = ['billColor', 'jeffColor', 'mattColor']
+    buddies = {'Bill the Conqueror': 'bill_the_conqueror', 'Matt the Unstable': 'matt_the_unstable', 'Jeff the Grand': 'jeff_the_grand'}
+
 
     randNum = 0
     userName = ""
@@ -88,15 +82,16 @@ class Application(Frame):
         self.inputField.delete(0, END)
         self.inputField.insert(0, "")
         self.inputField.configure(state='disabled')
-
+        random
         #choose random buddy
-        randNumBuddy = self.generateRand(len(self.buddies))
-        buddy = self.buddies[randNumBuddy]
+
+        buddy = self.friendsList.get(ACTIVE)
         #choose chat color
-        chatColorTag = self.chatColors[randNumBuddy]
+        #chatColorTag = buddies.get(buddy)
+        chatList = PyChatBuddies.jeff_the_grand.get_greetings()
+        chat = chatList[random.randrange(0, 3)]
+        chatColorTag = PyChatBuddies.jeff_the_grand.get_chat_color()
         #choose random chat
-        randNumChat = self.generateRand(len(self.buddies))
-        chat = self.chatArray[randNumBuddy][randNumChat]
         #find the index to start the text coloring
         index = self.chatbox.index('insert')
         self.chatRespond(buddy, chat, chatColorTag, index)
@@ -107,7 +102,9 @@ class Application(Frame):
     """
     def chatRespond(self, buddy, chat, chatColorTag, index):
         self.chatbox.insert('insert', buddy + ": " + chat)
-        self.chatbox.tag_add(chatColorTag, index + "", "insert")
+        userColor = self.userColor
+        self.chatbox.tag_configure(userColor, foreground = chatColorTag)
+        self.chatbox.tag_add(userColor, index + "", "insert")
         #scroll to end
         self.chatbox.see('end')
     """
@@ -118,7 +115,8 @@ class Application(Frame):
         self.userName = self.inputField.get()
         #make a copy to a local variable
         userName = self.userName
-        self.userProfilePicture = 'profile_pics/' + userName + '_thumbnail.png'
+        #self.userProfilePicture = 'profile_pics/' + userName + '_thumbnail.png'
+        #TODO do this for friends list
         tkMessageBox.showinfo('UserName', 'Your name is ' + userName)
          #create chat
         self.chat_screen()
@@ -146,6 +144,7 @@ class Application(Frame):
         """
         Using a loop is infesible because the value of i will always be used and generate the phrases of the last buddies in the array
         best fix for right now is to use a finite number of buddies
+        TODO make a class for these different screens
         """
         root.title("Enter a username")
         self.enterLabel = Label(self, text = "Please enter a username")
@@ -162,6 +161,7 @@ class Application(Frame):
         """
         Using a loop is infesible because the value of i will always be used and generate the phrases of the last buddies in the array
         best fix for right now is to use a finite number of buddies
+        TODO make a class for these different screens
         """
         #destroy old frame and add new one
         self.destroy()
@@ -171,6 +171,7 @@ class Application(Frame):
         #making copies of global variables
         userName = self.userName
         userColor = self.userColor
+        #TODO move friendslist to a file
         buddies = self.buddies
         if hasattr(self, 'userProfilePicture'):
             self.profilePictureThumbnail = PhotoImage(file = self.userProfilePicture)
@@ -201,7 +202,7 @@ class Application(Frame):
         self.friendsList = Listbox(self, selectmode=BROWSE)
         self.friendsList.grid(row = 0, column = 8, rowspan = 8, columnspan = 8)
         #populate friendslist
-        for buddy in buddies:
+        for buddy in buddies.keys():
             self.friendsList.insert(END, buddy)
         #add friend
         #self.addFriendButton = Button(self, text = "Add friend", command = self.addFriendScreen)
