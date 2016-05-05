@@ -20,7 +20,7 @@ root = Tk()
 class Application(Frame):
     #create global variables
     #chatColors = ['billColor', 'jeffColor', 'mattColor']
-    buddies = {'Bill the Conqueror': 'bill_the_conqueror', 'Matt the Unstable': 'matt_the_unstable', 'Jeff the Grand': 'jeff_the_grand'}
+    buddies = {'Bill the Conqueror': 'PyChatBuddies.bill_the_conqueror', 'Matt the Unstable': 'PyChatBuddies.matt_the_unstable', 'Jeff the Grand': 'PyChatBuddies.jeff_the_grand'}
 
 
     randNum = 0
@@ -84,13 +84,14 @@ class Application(Frame):
         self.inputField.configure(state='disabled')
         random
         #choose random buddy
-
         buddy = self.friendsList.get(ACTIVE)
+        print buddy
+        buddies = self.buddies
         #choose chat color
         #chatColorTag = buddies.get(buddy)
-        chatList = PyChatBuddies.jeff_the_grand.get_greetings()
+        chatList = buddies.get(buddy).get_greetings()
         chat = chatList[random.randrange(0, 3)]
-        chatColorTag = PyChatBuddies.jeff_the_grand.get_chat_color()
+        chatColorTag = buddies.get(buddy).get_chat_color()
         #choose random chat
         #find the index to start the text coloring
         index = self.chatbox.index('insert')
@@ -189,11 +190,6 @@ class Application(Frame):
         #chatbox
         self.chatbox = ScrolledText(self, wrap = 'word', width = 50, height = 20, bg = 'beige')
         self.chatbox.grid(row = 0, column = 0, rowspan =8, columnspan =7)
-        #setting colors
-        self.chatbox.tag_config("userColor", foreground = userColor)
-        self.chatbox.tag_config("billColor", foreground="Blue")
-        self.chatbox.tag_config("jeffColor", foreground="Green")
-        self.chatbox.tag_config("mattColor", foreground="Red")
         #input field
         self.inputField = Entry(self)
         self.inputField.grid(row =9, column = 6)
@@ -232,7 +228,6 @@ class Application(Frame):
             self.profilePictureLabel.grid()
         self.uploadProfilePictureButton = Button(self, text = "Back", command = self.chat_screen)
         self.uploadProfilePictureButton.grid()
-        #TODO user picture
         #username
         #self.userNameLabel = Label(self, text = "username: " + userName)
         #TODO create change button
