@@ -20,7 +20,7 @@ root = Tk()
 class Application(Frame):
     #create global variables
     #chatColors = ['billColor', 'jeffColor', 'mattColor']
-    buddies = {'Bill the Conqueror': 'PyChatBuddies.bill_the_conqueror', 'Matt the Unstable': 'PyChatBuddies.matt_the_unstable', 'Jeff the Grand': 'PyChatBuddies.jeff_the_grand'}
+    buddies = {'Bill the Conqueror': PyChatBuddies.bill_the_conqueror, 'Matt the Unstable': PyChatBuddies.matt_the_unstable, 'Jeff the Grand': PyChatBuddies.jeff_the_grand}
 
 
     randNum = 0
@@ -85,27 +85,28 @@ class Application(Frame):
         random
         #choose random buddy
         buddy = self.friendsList.get(ACTIVE)
-        print buddy
         buddies = self.buddies
         #choose chat color
         #chatColorTag = buddies.get(buddy)
         chatList = buddies.get(buddy).get_greetings()
         chat = chatList[random.randrange(0, 3)]
-        chatColorTag = buddies.get(buddy).get_chat_color()
+        chatColor = buddies.get(buddy).get_chat_color()
+        chatFont = buddies.get(buddy).get_chat_font()
+        htmlTag = buddies.get(buddy).get_html_tag()
         #choose random chat
         #find the index to start the text coloring
         index = self.chatbox.index('insert')
-        self.chatRespond(buddy, chat, chatColorTag, index)
+        self.chatRespond(buddy, chat, chatColor, chatFont, htmlTag, index)
         self.inputField.configure(state='normal')
 
     """
     function to generate Bill's Messages
     """
-    def chatRespond(self, buddy, chat, chatColorTag, index):
+    def chatRespond(self, buddy, chat, chatColor, chatFont, htmlTag, index):
         self.chatbox.insert('insert', buddy + ": " + chat)
-        userColor = self.userColor
-        self.chatbox.tag_configure(userColor, foreground = chatColorTag)
-        self.chatbox.tag_add(userColor, index + "", "insert")
+        userColor = ''
+        self.chatbox.tag_configure(htmlTag, foreground = chatColor, font = chatFont)
+        self.chatbox.tag_add(htmlTag, index + "", "insert")
         #scroll to end
         self.chatbox.see('end')
     """
