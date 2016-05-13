@@ -59,18 +59,13 @@ class Application(Frame):
     """
     Function to remove friend
     """
-    def removeFriend(self, username, friendToRemoveIndex):
+    def removeFriend(self, username):
+        buddyToRemove = self.friendsList.get(ACTIVE)
         buddies = self.buddies
-        friendToRemove = buddies[friendToRemoveIndex]
-        buddies.remove(friendToRemove)
-
-        print "here is self.buddies"
-        for e in self.buddies:
-            print e
-        print "here is buddies"
-        for e in buddies:
-            print e
-        self.friendsList.delete(friendToRemoveIndex)
+        del buddies[buddyToRemove]
+        #TODO test
+        #must rerender friendslist 
+        print buddies
     """
     Function for the AI to think of a response
     """
@@ -100,7 +95,7 @@ class Application(Frame):
         self.inputField.configure(state='normal')
 
     """
-    function to generate Bill's Messages
+    function to generate bot's Messages
     """
     def chatRespond(self, buddy, chat, chatColor, chatFont, htmlTag, index):
         self.chatbox.insert('insert', buddy + ": " + chat)
@@ -205,7 +200,7 @@ class Application(Frame):
         #self.addFriendButton = Button(self, text = "Add friend", command = self.addFriendScreen)
         #self.addFriendButton.grid(row = 9, column = 8)
         #remove friend
-        self.removeFriendButton = Button(self, text = "Remove friend", command =lambda self=self: self.removeFriend(userName, 1))
+        self.removeFriendButton = Button(self, text = "Remove friend", command =lambda self=self: self.removeFriend(userName))
         self.removeFriendButton.grid(row = 9, column = 9)
     """
     function to create profile widgets
