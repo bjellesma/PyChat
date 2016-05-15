@@ -32,7 +32,6 @@ class Application(Frame):
     def __init__(self, master):
         #initialize frame
         Frame.__init__(self,master)
-        self.grid(row =0, column = 0)
         #screen to ask user for input
         self.login_screen()
 
@@ -61,11 +60,11 @@ class Application(Frame):
     """
     def removeFriend(self, username):
         buddyToRemove = self.friendsList.get(ACTIVE)
-        buddies = self.buddies
-        del buddies[buddyToRemove]
+        del self.buddies[buddyToRemove]
         #TODO test
-        #must rerender friendslist 
-        print buddies
+        #must rerender friendslist
+        print self.buddies
+        self.PyChat_Chat_Screen_friendsList(0,8,8,8, self.buddies)
     """
     Function for the AI to think of a response
     """
@@ -143,7 +142,7 @@ class Application(Frame):
         best fix for right now is to use a finite number of buddies
         TODO make a class for these different screens
         """
-        root.title("Enter a username")
+        self.Pychat_newScreen("Welcome")
         self.enterLabel = Label(self, text = "Please enter a username")
         self.enterLabel.grid(row = 2, column = 2, columnspan = 2)
         #username input field
@@ -162,21 +161,13 @@ class Application(Frame):
         """
         #destroy old frame and add new one
         self.destroy()
-        Frame.__init__(self)
-        self.grid(row = 0, column = 0)
-        root.title("PyChat")
+        self.Pychat_newScreen("PyChat")
         #making copies of global variables
         userName = self.userName
         userColor = self.userColor
-        #TODO move friendslist to a file
-        buddies = self.buddies
-        if hasattr(self, 'userProfilePicture'):
-            self.profilePictureThumbnail = PhotoImage(file = self.userProfilePicture)
-            self.profilePictureThumbnailLabel = Label(self, image = self.profilePictureThumbnail)
-            self.profilePictureThumbnailLabel.grid(row = 10, column = 2)
-        else:
-            self.profilePictureThumbnailLabel = Label(self, text = "You have no Profile Picture Yet")
-            self.profilePictureThumbnailLabel.grid(row = 10, column = 2)
+
+
+        self.PyChat_Chat_Screen_profilePicture(10, 2, "You Have No Profile Picture Yet")
         #username label
         self.userNameLabel = Label(self, text = userName)
         self.userNameLabel.grid(row = 9, column = 2)
@@ -191,11 +182,9 @@ class Application(Frame):
         self.inputField.grid(row =9, column = 6)
         self.inputField.bind('<Return>', self.chatThink)
         #friends list
-        self.friendsList = Listbox(self, selectmode=BROWSE)
-        self.friendsList.grid(row = 0, column = 8, rowspan = 8, columnspan = 8)
-        #populate friendslist
-        for buddy in buddies.keys():
-            self.friendsList.insert(END, buddy)
+        self.PyChat_Chat_Screen_friendsList(0,8,8,8, self.buddies)
+
+
         #add friend
         #self.addFriendButton = Button(self, text = "Add friend", command = self.addFriendScreen)
         #self.addFriendButton.grid(row = 9, column = 8)
@@ -215,19 +204,35 @@ class Application(Frame):
         userColor = self.userColor
         self.uploadProfilePictureButton = Button(self, text = "Upload New Picture", command = self.uploadProfilePicture)
         self.uploadProfilePictureButton.grid()
-        if hasattr(self, 'userProfilePicture'):
-            self.profilePictureImage = PhotoImage(file = self.userProfilePicture)
-            self.profilePictureLabel = Label(self, image = self.profilePictureImage)
-            self.profilePictureLabel.grid()
-        else:
-            self.profilePictureLabel = Label(self, text = "Please Upload a new Image")
-            self.profilePictureLabel.grid()
-        self.uploadProfilePictureButton = Button(self, text = "Back", command = self.chat_screen)
-        self.uploadProfilePictureButton.grid()
+        self.PyChat_Chat_Screen_profilePicture(0,0,"Please Upload a new Picture")
         #username
         #self.userNameLabel = Label(self, text = "username: " + userName)
         #TODO create change button
-
+    def Pychat_newScreen(self, name):
+        Frame.__init__(self)
+        self.grid(row =0, column = 0)
+        root.title(name)
+    def PyChat_Chat_Screen_profilePicture(self, row, column, altText):
+        try:
+            profilePicture = self.userProfilePicture
+            profilePictureThumbnail = self.profilePictureThumbnail
+        except:
+            profilePicture = 'none'
+            profilePictureThumbnail = 'none'
+        if hasattr(self, 'userProfilePicture'):
+            self.profilePictureThumbnail = PhotoImage(file = profilePicture)
+            self.profilePictureThumbnailLabel = Label(self, image = profilePictureThumbnail)
+            self.profilePictureThumbnailLabel.grid(row=row, column=column)
+        else:
+            self.profilePictureThumbnailLabel = Label(self, text = altText)
+            self.profilePictureThumbnailLabel.grid(row=row, column=column)
+    def PyChat_Chat_Screen_friendsList(self, row, column, rowspan, colspan, buddies):
+        self.friendsList = Listbox(self, selectmode=BROWSE)
+        self.friendsList.grid(row = row, column = column, rowspan = rowspan, columnspan = colspan)
+        #populate friendslist
+        #TODO move friendslist to a file
+        for buddy in buddies.keys():
+            self.friendsList.insert(END, buddy)
 #frame size
 root.geometry("")
 
