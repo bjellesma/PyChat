@@ -20,7 +20,7 @@ root = Tk()
 class Application(Frame):
     #create global variables
     #chatColors = ['billColor', 'jeffColor', 'mattColor']
-    buddies = {'Bill the Conqueror': PyChatBuddies.bill_the_conqueror, 'Matt the Unstable': PyChatBuddies.matt_the_unstable, 'Jeff the Grand': PyChatBuddies.jeff_the_grand}
+    buddies = {'Billy': PyChatBuddies.bill_the_conqueror, 'Matt': PyChatBuddies.matt_the_unstable, 'Jeff': PyChatBuddies.jeff_the_grand}
 
 
     randNum = 0
