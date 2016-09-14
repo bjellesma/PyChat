@@ -71,6 +71,6 @@ class PyChatBuddies:
     def get_html_tag(self):
         return self.__html_tag
 
-bill_the_conqueror = PyChatBuddies('Bill', ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"], "Whats Cookin Good Lookin", 'blue', ("Georgia", "12", "bold"), 'bill_the_conqueror_tag')
+bill_the_conqueror = PyChatBuddies('Bill', ["Hi\n", "What\'d you say to me?\n", "Do I look like I drive cabs in Baton Rouge for fun?\n"], "How are ya?", 'blue', ("Georgia", "12", "bold"), 'bill_the_conqueror_tag')
 matt_the_unstable = PyChatBuddies('Matt', ["Lemonade for sale\n", "You think you are better than me\n", "My dad could so beat your dad in a race\n"], "Yup Yup Yup", 'red', ("Georgia", "12", "bold"), 'matt_the_unstable_tag')
-jeff_the_grand = PyChatBuddies('Jeff', ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "You know, you would get along well with my grandmother, she is really annoying too\n"], "Whats Crackalackin", 'green', ("Georgia", "12", "bold"), 'jeff_the_grand_tag')
+jeff_the_grand = PyChatBuddies('Jeff', ["Yo\n", "Dude, that's so funny I forgot to laugh\n", "Python is a really cool language\n"], "Python Rocks", 'green', ("Georgia", "12", "bold"), 'jeff_the_grand_tag')
